@@ -1,5 +1,23 @@
+import csv
+import os
+
 expenses = []
 
+if not os.path.exists("expenses.csv"):
+    with open("expenses.csv","w",newline="")as file:
+        writer=csv.writer(file)
+        writer.writerow(["date","category","amount","note"])
+        
+try:
+    with open("expenses.csv","r",newline="")as file:
+        reader=csv.DictReader(file)
+
+        for row in reader:
+            row["amount"]=float(row["amount"])
+            expenses.append(row)
+except (ValueError,KeyError):
+    print("Warning:Some data in csv file could not be loaded.")
+        
 print("Personal Expense Tracker")
 
 while True:
@@ -35,6 +53,16 @@ while True:
         }
 
         expenses.append(expense)
+
+        with open("expenses.csv","a",newline="") as file:
+            writer=csv.writer(file)
+            writer.writerow([
+                expense["date"],
+                expense["category"],
+                expense["amount"],
+                expense["note"]
+            ])
+
         print("Expense added successfully!")
 
     elif choice == "2":

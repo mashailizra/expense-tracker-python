@@ -1,7 +1,41 @@
 import csv
 import os
 
-expenses = []
+class Expense:
+    def __init__(self,date,category,amount,note):
+        self.date= date
+        self.category= category
+        self.amount= amount
+        self.note= note
+
+    def __str__(self):
+        return(
+            f"Date:{self.date}\n"
+            f"Category:{self.category}\n"
+            f"Amount:{self.amount}\n"
+            f"Note:{self.note}\n"
+        )
+
+class ExpenseTracker:
+    def __init__(self):
+        self.expenses=[]
+
+    def add_expense(self,expense):
+        self.expenses.append(expense)
+
+    def list_expenses(self):
+        if not self.expenses:
+            print("No expenses found.")
+            return
+
+        print("\nExpenses:")
+
+        for expense in self.expenses:
+            print(expense)
+            print("-" * 30)
+
+
+tracker = ExpenseTracker()
 
 if not os.path.exists("expenses.csv"):
     with open("expenses.csv","w",newline="")as file:
@@ -13,8 +47,14 @@ try:
         reader=csv.DictReader(file)
 
         for row in reader:
-            row["amount"]=float(row["amount"])
-            expenses.append(row)
+            expense = Expense(
+                row["date"],
+                row["category"],
+                float(row["amount"]),
+                row["note"]
+            )
+
+            tracker.add_expense(expense)
 except (ValueError,KeyError):
     print("Warning:Some data in csv file could not be loaded.")
         
@@ -45,22 +85,22 @@ while True:
 
         note = input("Enter note: ")
 
-        expense = {
-            "date": date,
-            "category": category,
-            "amount": amount,
-            "note": note
-        }
+        expense = Expense(
+            date,
+            category,
+            amount,
+            note
+        )
 
-        expenses.append(expense)
+        tracker.add_expense(expense)
 
         with open("expenses.csv","a",newline="") as file:
             writer=csv.writer(file)
             writer.writerow([
-                expense["date"],
-                expense["category"],
-                expense["amount"],
-                expense["note"]
+                expense.date,
+                expense.category,
+                expense.amount,
+                expense.note
             ])
 
         print("Expense added successfully!")
@@ -84,3 +124,26 @@ while True:
 
     else:
         print("Invalid choice. Please try again.")
+
+
+tracker = ExpenseTracker()
+
+tracker.add_expense(
+    Expense(
+        "2026-08-05",
+        "Food",
+        250,
+        "Lunch"
+    )
+)
+
+tracker.add_expense(
+    Expense(
+        "2026-08-05",
+        "Travel",
+        100,
+        "Bus Fare"
+    )
+)
+
+tracker.list_expenses()

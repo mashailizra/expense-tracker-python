@@ -126,24 +126,3 @@ while True:
         print("Invalid choice. Please try again.")
 
 
-tracker = ExpenseTracker()
-
-tracker.add_expense(
-    Expense(
-        "2026-08-05",
-        "Food",
-        250,
-        "Lunch"
-    )
-)
-
-tracker.add_expense(
-    Expense(
-        "2026-08-05",
-        "Travel",
-        100,
-        "Bus Fare"
-    )
-)
-
-tracker.list_expenses()
